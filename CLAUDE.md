@@ -102,6 +102,9 @@ The Send uses Culture Index (CI), so the app follows CI's own guide ("How to Rea
   descriptions. Fit % = mean of max(0, 1 − distance/4) over the lane's key traits. Strong ≥ 85, some stretch ≥ 60.
   Targets are Claude's reading of the job descriptions and are expected to be tuned with Uriah.
 - "Big job stretch" = a move of ≥ 3 on 2 or more traits at once.
+- Best-suited roles (`rankLanes`, `bestRolesHTML`): all ten lanes ranked by fit %, top three shown on the person
+  page with ✓ / ≈ / ✗ per "What it takes" line (source: "Campaign Executive Team: Job Descriptions"). The
+  People list shows "Best fit" when it differs from the person's lane; the CSV has both.
 
 ## Team views (Team results page)
 

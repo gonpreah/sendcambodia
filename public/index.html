@@ -228,6 +228,9 @@ h3 .p.km{font-family:Koulen,sans-serif;font-weight:400;font-size:20px}
 .talk{padding-left:18px;margin:8px 0 0}.talk li{margin:8px 0}
 /* Khmer text always uses a Khmer font (headings keep Koulen through .p.km) */
 [lang="km"]{font-family:"Kantumruy Pro","Noto Sans Khmer",sans-serif}
+.roles{margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:12px}
+.roles .fr-top{align-items:flex-start}
+.roles .fitpill{margin-top:2px;flex:none}
 .back{background:none;border:0;color:var(--accent-text);font-weight:600;padding:2px 0 12px;font-size:16px}
 .hide{display:none!important}
 @media (max-width:420px){ h1 .p{font-size:36px} .qtext .p{font-size:22px} }
@@ -379,13 +382,33 @@ const rangeTxt = k => k.min!=null && k.max!=null ? `${k.min}–${k.max}` : k.min
 const STATUS = {fit:['Fits','ស៊ីគ្នា'], near:['Close','ជិតដល់'], stretch:['Stretch','ត្រូវប្រឹងប្រែង']};
 function fitPill(p){ const [en,km,c]=fitLabel(p); return `<span class="fitpill ${c}">${p}% · ${one(en,km)}</span>`; }
 
+// The ten lanes ranked by how well this person's natural profile meets each job description's "What it takes".
+function rankLanes(r){
+  return DIRECTOR_LANES.map(l=>({l, f:fitFor(l,r.scores)}))
+    .sort((a,b)=>b.f.pct-a.f.pct || (b.l.k===r.lane)-(a.l.k===r.lane));
+}
+function bestRolesHTML(r){
+  const ranked=rankLanes(r), top=ranked.slice(0,3), cur=laneOf(r.lane);
+  const curRank=ranked.findIndex(x=>x.l.k===cur.k)+1;
+  const tick={fit:'✓',near:'≈',stretch:'✗'};
+  const lead = top[0].l.k===cur.k
+    ? one('Your current lane is your strongest natural fit.','ផ្នែកបច្ចុប្បន្នរបស់អ្នក គឺស៊ីគ្នាតាមធម្មជាតិខ្លាំងបំផុត។')
+    : curRank ? one(`Your current lane, ${cur.en}, ranks ${curRank} of ${ranked.length}.`,`ផ្នែកបច្ចុប្បន្នរបស់អ្នក ${cur.km} ស្ថិតនៅលំដាប់ទី ${curRank} ក្នុងចំណោម ${ranked.length}។`) : '';
+  return `<div class="fitbox">
+    <h3>${L('Best-suited roles','តួនាទីដែលស៊ីគ្នាបំផុត')}</h3>
+    <p class="note" style="margin-top:2px">${one(`From the natural profile${isCI(r)?' (Culture Index)':' (quick survey, a rough guide)'} against “What it takes” in each campaign job description.`,`ពីទម្រង់ធម្មជាតិ${isCI(r)?' (Culture Index)':' (ការស្ទង់មតិរហ័ស ជាការណែនាំប្រហាក់ប្រហែល)'} ធៀបនឹង «អ្វីដែលត្រូវការ» ក្នុងការពិពណ៌នាការងារនីមួយៗ។`)}</p>
+    <ol class="roles">${top.map(x=>`<li>
+      <div class="fr-top"><b>${esc(one(x.l.en,x.l.km))}${x.l.k===cur.k?` <small>(${one('your lane','ផ្នែករបស់អ្នក')})</small>`:''}</b>${fitPill(x.f.pct)}</div>
+      <div class="fr-nums">${x.f.rows.map(k=>{ const t=traitOf(k.t); return `${tick[k.status]} ${esc(t.l)} · ${esc(one(k.why[0],k.why[1]))}`; }).join('<br>')}</div>
+    </li>`).join('')}</ol>
+    ${lead?`<p class="note">${lead}</p>`:''}
+    <p class="note">${one('✓ meets the target · ≈ close · ✗ a stretch. A starting point for conversation, not a placement decision.','✓ ដល់គោលដៅ · ≈ ជិតដល់ · ✗ ត្រូវប្រឹងប្រែង។ ជាចំណុចចាប់ផ្តើមសម្រាប់ការជជែក មិនមែនការសម្រេចលើការចាត់តាំងទេ។')}</p>
+  </div>`;
+}
 function fitHTML(r){
   const lane = laneOf(r.lane);
-  const best = DIRECTOR_LANES.map(l=>({l, f:fitFor(l,r.scores)})).sort((a,b)=>b.f.pct-a.f.pct);
-  const others = best.filter(x=>x.l.k!==lane.k).slice(0,3);
-  const othersLine = `<p class="note">${one('Strongest natural fit across all lanes:','ស៊ីគ្នាតាមធម្មជាតិខ្លាំងបំផុត ក្នុងចំណោមផ្នែកទាំងអស់៖')} ${others.map(x=>`${esc(one(x.l.en,x.l.km))} ${x.f.pct}%`).join(', ')}</p>`;
   const f = fitFor(lane, r.scores);
-  if(!f) return `<div class="fitbox"><h3>${L('Fit with the job descriptions','ភាពស៊ីគ្នាជាមួយការពិពណ៌នាការងារ')}</h3>${othersLine}</div>`;
+  if(!f) return bestRolesHTML(r);
   return `<div class="fitbox">
     <h3>${L('Fit with '+lane.en, 'ភាពស៊ីគ្នាជាមួយ '+lane.km)}</h3>
     <div style="margin:4px 0 10px">${fitPill(f.pct)}</div>
@@ -395,8 +418,7 @@ function fitHTML(r){
         <div class="fr-nums">${one('Needs','ត្រូវការ')} ${rangeTxt(x)} · ${one('Natural','ធម្មជាតិ')} ${x.v.toFixed(1)}${jv!=null?` · ${one('Job','ការងារ')} ${jv.toFixed(1)}`:''}</div>
         <div class="fr-why">${L('“'+x.why[0]+'”','«'+x.why[1]+'»')}</div>
       </div>`; }).join('')}</div>
-    ${othersLine}
-  </div>`;
+  </div>${bestRolesHTML(r)}`;
 }
 
 
@@ -1050,7 +1072,7 @@ function vTeam(){
   <ul class="people">${list.map(r=>{ const f=fitOf(r); const lane=laneOf(r.lane); return `<li id="row-${esc(r.id)}">
     <button class="row" data-open="${esc(r.id)}" aria-expanded="${openId===r.id}">
       <span class="who"><b>${esc(displayName(r))}${srcTag(r)}${r.id===myId?` <small>(${one('you','អ្នក')})</small>`:''}</b><small>${esc(one(lane.en,lane.km))}${r.role?' · '+esc(r.role):''}</small>
-        ${f?fitPill(f.pct):''}${bigStretch(r)?` <span class="stretch-badge">${one('Big job stretch','ប្រឹងប្រែងខ្លាំង')}</span>`:''}</span>
+        ${f?fitPill(f.pct):''}${(()=>{ const b=rankLanes(r)[0]; return b && b.l.k!==lane.k ? `<small style="display:block">${one('Best fit','ស៊ីគ្នាបំផុត')}: ${esc(one(b.l.en,b.l.km))} ${b.f.pct}%</small>` : ''; })()}${bigStretch(r)?` <span class="stretch-badge">${one('Big job stretch','ប្រឹងប្រែងខ្លាំង')}</span>`:''}</span>
       ${sigHTML(r.scores)}
     </button>
     ${openId===r.id?`<div class="detail">
@@ -1157,9 +1179,9 @@ async function finish(){
 }
 
 async function exportCSV(){
-  const head=['Name','Source','CI pattern','EU natural','EU job','Lane','Other role','Updated','Lane fit %',...TRAITS.map(t=>t.en+' (natural)'),...TRAITS.map(t=>t.en+' (job)'),...TRAITS.map(t=>t.en+' (gap)'),...ITEMS.map((_,i)=>'P1 Q'+(i+1)),...ITEMS.map((_,i)=>'P2 Q'+(i+1))];
+  const head=['Name','Source','CI pattern','EU natural','EU job','Lane','Other role','Updated','Lane fit %','Best-suited role','Best fit %',...TRAITS.map(t=>t.en+' (natural)'),...TRAITS.map(t=>t.en+' (job)'),...TRAITS.map(t=>t.en+' (gap)'),...ITEMS.map((_,i)=>'P1 Q'+(i+1)),...ITEMS.map((_,i)=>'P2 Q'+(i+1))];
   const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
-  const rows=results.map(r=>{ const g=gaps(r)||{}; return [r.name,r.source==='ci'?'Culture Index':'Survey',patternOf(r),r.ci?.traitsEU||'',r.ci?.jobEU||'',laneOf(r.lane).en,r.role,new Date(r.updatedAt||0).toISOString().slice(0,10),fitFor(laneOf(r.lane),r.scores)?.pct??'',
+  const rows=results.map(r=>{ const g=gaps(r)||{}; return [r.name,r.source==='ci'?'Culture Index':'Survey',patternOf(r),r.ci?.traitsEU||'',r.ci?.jobEU||'',laneOf(r.lane).en,r.role,new Date(r.updatedAt||0).toISOString().slice(0,10),fitFor(laneOf(r.lane),r.scores)?.pct??'',rankLanes(r)[0].l.en,rankLanes(r)[0].f.pct,
     ...TRAITS.map(t=>r.scores?.[t.k]),...TRAITS.map(t=>r.jobScores?.[t.k]??''),...TRAITS.map(t=>g[t.k]??''),
     ...(r.answers||ITEMS.map(()=>'')),...(r.jobAnswers||ITEMS.map(()=>''))].map(q).join(','); });
   const csv='\ufeff'+[head.map(q).join(','),...rows].join('\n');
