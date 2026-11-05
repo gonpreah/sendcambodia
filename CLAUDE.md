@@ -61,6 +61,7 @@ scores    {ini, ppl, pat, str, log, cre}  0–10, natural profile = Culture Inde
 jobScores {same}                          0–10, what their current job asks (optional)
 answers / jobAnswers  [24 ints 1–5]       survey only
 source: "ci", ci: {traits:{A..I}, job:{A..I}, traitsArrow, jobArrow, traitsEU, jobEU, pattern}   Culture Index uploads only
+pattern                                   Culture Index pattern the person reported (quick survey only)
 (no source = the app's own quick survey)
 ```
 `results.mjs` `clean()` keeps only these fields. Update it if you add fields.
@@ -77,6 +78,11 @@ The Send uses Culture Index (CI), so the app follows CI's own guide ("How to Rea
 - Energy units (EU): natural and job EU are stored with CI uploads (typed in; the photo reader also asks for
   them, the PDF vector reader does not read them yet). Job EU ≥ 10 % above natural = giving more energy than
   they have; ≥ 10 % below = possible low morale or under-used. Shown on the person page and Team shape.
+- Patterns: the 19 CI patterns in the four groups The Send's platform uses (`PATTERN_GROUPS`: Visionary,
+  Research, Social, Organizer). CI uploads keep the pattern read from the PDF, matched to the list and
+  correctable in a dropdown. Quick-survey people can pick theirs if they know it (shown as self-reported).
+  The app never guesses a pattern from scores: only CI's scoring produces one. Team shape lists the team by
+  pattern group, including empty groups.
 - Big job stretch = a move of ≥ 3 on 2 or more traits at once (CI warns about large moves on several traits).
 - **Open question for a trained CI reader:** the Job graph is read against the *Traits* arrow (so the dot
   moves match CI's drawing). CI says each graph has its own arrow. For Uriah (traits arrow 2.75, job arrow 7)
@@ -95,7 +101,7 @@ The Send uses Culture Index (CI), so the app follows CI's own guide ("How to Rea
 - Lane fit: `LANES` holds 2–4 target ranges per lane, taken from "What it takes" in the campaign job
   descriptions. Fit % = mean of max(0, 1 − distance/4) over the lane's key traits. Strong ≥ 85, some stretch ≥ 60.
   Targets are Claude's reading of the job descriptions and are expected to be tuned with Uriah.
-- "Big job stretch" = any trait where job − natural ≥ 3.
+- "Big job stretch" = a move of ≥ 3 on 2 or more traits at once.
 
 ## Team views (Team results page)
 

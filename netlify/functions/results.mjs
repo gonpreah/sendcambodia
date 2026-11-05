@@ -61,6 +61,7 @@ function clean(body) {
     scores,
     updatedAt: Date.now(),
   };
+  const pat = str(body.pattern, 40).trim(); if (pat) rec.pattern = pat;
   if (!rec.name) return null;
   const job = scoreObj(body.jobScores); if (job) rec.jobScores = job;
   const a1 = answerArr(body.answers); if (a1) rec.answers = a1;
