@@ -1,0 +1,113 @@
+# The Send Cambodia · Team Work Style Profile
+
+A bilingual (Khmer / English) work-style survey for The Send Cambodia campaign executive team.
+People either take a 48-statement survey or upload their Culture Index PDF report. The app then shows
+each person's profile, how far their current job stretches them, and how well they fit their lane's
+job description. It started as a claude.ai artifact and is now being moved to Netlify.
+
+Owner: Uriah Lyford (Media Director, The Send Cambodia).
+
+## Layout
+
+```
+public/index.html            the whole app: UI, content, scoring, Culture Index PDF reader
+public/platform.js           adapter: implements window.claude.use(...) on top of /api/*
+netlify/functions/results.mjs    GET / PUT / DELETE results, stored in Netlify Blobs ("results" store)
+netlify/functions/read-image.mjs optional: reads a photo/screenshot of a CI chart with the Anthropic API
+data/seed.json               results exported from the claude.ai version; loaded once on first request
+```
+
+`index.html` still talks to the claude.ai artifact runtime API (`claude.use("db" | "user" | "downloads" | "sample")`).
+`platform.js` provides those same calls for Netlify. Keep that contract, so the page can still be republished
+as a claude.ai artifact unchanged if needed. Put new platform behaviour in `platform.js`, not in the page.
+
+## Run and deploy
+
+```
+npm install
+netlify login
+netlify init                     # create or link the site
+netlify env:set TEAM_CODE  "<code everyone on the team uses>"
+netlify env:set ADMIN_CODE "<Uriah's code: delete, CSV, entering answers for others>"
+netlify env:set ANTHROPIC_API_KEY "<optional, only for reading photos/screenshots>"
+netlify dev                      # local, http://localhost:8888
+netlify deploy --prod
+```
+
+The first request after deploy copies `data/seed.json` into Blobs and sets `_meta/seeded`, so it runs once.
+**This repo (`gonpreah/sendcambodia`) is public, so `data/seed.json` is committed empty and must stay empty.**
+Never commit real results. The two results from the claude.ai version (Uriah, Andrew) are re-entered in the
+app after the first deploy (retake the survey or re-upload the Culture Index PDF).
+
+Netlify site: `send-cambodia-profile` in the GP Apps team (https://send-cambodia-profile.netlify.app).
+TEAM_CODE and ADMIN_CODE are set there as secret environment variables for production.
+
+## Access model (deliberately simple; improve if needed)
+
+- Everyone enters `TEAM_CODE` once per device (saved in localStorage). `ADMIN_CODE` gives the admin role.
+- Each device gets a random id (`d_...`). A member can only write the result whose id is their device id.
+  The admin can write or delete any id.
+- Codes are shared secrets, not accounts. If stronger access is needed, swap in Netlify Identity or
+  magic-link email in `platform.js` + `roleFor()` in `results.mjs`; the page itself shouldn't need to change.
+- All pages send `noindex`.
+
+## Data model (one Blobs entry per person, key = id)
+
+```
+name, lane (point|outcomes|mobilization|finance|media|communications|operations|worship|outreach|systems|other),
+role, updatedAt,
+scores    {ini, ppl, pac, str, log, cre}  0–10, natural profile
+jobScores {same}                          0–10, what their current job asks (optional)
+answers / jobAnswers  [24 ints 1–5]       survey only
+source: "ci", ci: {traits:{A..I}, job:{A..I}, traitsArrow, jobArrow, pattern}   Culture Index uploads only
+```
+`results.mjs` `clean()` keeps only these fields. Update it if you add fields.
+
+## Scoring (all in index.html)
+
+- Survey: 6 traits × 4 statements, one reverse-scored per trait, mapped to 0–10. Part 2 repeats the same
+  statements as "how much does your job ask this of you".
+- Culture Index → app traits: A→Initiative, B→People energy, C→Pace (reversed: 10 − C), D→Structure,
+  L→Logic, I→Creativity. A–D are read **relative to the red arrow** of the Traits chart (arrow becomes 5).
+  The Job chart uses the Traits arrow too, so the gap between the charts matches how CI draws it. L and I are absolute.
+- CI PDF reader (`parseCIPdf`): uses pdf.js 3.11.174 from cdnjs. It reads the vector drawing of page 1: dots by
+  fill colour (A red, B yellow, C blue, D green, L purple, I light blue), first six = Traits, next six = Job;
+  red vertical lines = arrows; scale origin X0 = 159, one step = 40 drawing units. Verified against Uriah's report.
+  If a report doesn't match this layout, it falls back to rendering page 1 and `/api/read-image`.
+- Lane fit: `LANES` holds 2–4 target ranges per lane, taken from "What it takes" in the campaign job
+  descriptions. Fit % = mean of max(0, 1 − distance/4) over the lane's key traits. Strong ≥ 85, some stretch ≥ 60.
+  Targets are Claude's reading of the job descriptions and are expected to be tuned with Uriah.
+- "Big job stretch" = any trait where job − natural ≥ 3.
+
+## Team views (Team results page)
+
+Four tabs: **Team shape** (default), People, **Compare**, Lanes and job fit.
+
+- Team shape (`vShape`): one 0–10 line per trait with a dot per person (initials, own colour, stacked when
+  close), the team average as a dark line, and the names at each end (≤ 3.5 and ≥ 6.5). Above it, cards from
+  `teamInsights()`: where the team leans (average ≥ 6.5 or ≤ 3.5, else the most extreme trait if ≥ 1 from 5),
+  ends nobody covers and ends only one person covers (shown from 3 people up), and the traits where jobs pull
+  hardest (mean job − natural ≥ 1.5). Respects the lane filter. Tapping a dot opens that person in People.
+- Compare (`vCompare`): pick 2–4 people, natural or job profile, same dot lines plus numbers, then one talking
+  point per pair from `pairTalk()` (largest difference ≥ 3, and shared highs).
+- Person colours: `--c1`…`--c12`, assigned by alphabetical order of all results, so a person keeps one colour.
+- New Khmer strings for these views also need the fluent-speaker review.
+
+## Known items / next steps
+
+1. Seed data: Uriah's record was saved before arrows were read. It has been recalculated in seed.json from his
+   PDF (traits arrow 2.75, job arrow 7). Andrew Lee's record keeps its claude.ai id, so if he retakes it on Netlify
+   he'll get a second entry; delete the old one as admin.
+2. Have a fluent Khmer speaker review every Khmer string (all statements, lane names, lane "why" lines).
+3. Consider vendoring pdf.js into `public/vendor/` instead of loading it from cdnjs.
+4. Lane targets may need tuning; consider making them editable by the admin (store in Blobs).
+5. There are no automated tests yet. Approach used so far: bundle `results.mjs` with esbuild, alias
+   `@netlify/blobs` to an in-memory mock, serve `public/` + the function from a small Node server, and drive it
+   with Playwright at a 390px viewport (survey, CI upload with a real report PDF, team tab, lanes tab, delete, CSV,
+   member vs admin).
+
+## Principles
+
+- It is a conversation tool, not a hiring test. Keep that wording in the UI.
+- Bilingual everywhere: every user-facing string goes through `L(en, km)` or `one(en, km)`.
+- Store numbers only; never store uploaded report files.
