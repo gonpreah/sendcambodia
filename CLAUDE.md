@@ -56,19 +56,36 @@ TEAM_CODE and ADMIN_CODE are set there as secret environment variables for produ
 ```
 name, lane (point|outcomes|mobilization|finance|media|communications|operations|worship|outreach|systems|other),
 role, updatedAt,
-scores    {ini, ppl, pac, str, log, cre}  0–10, natural profile
+scores    {ini, ppl, pat, str, log, cre}  0–10, natural profile = Culture Index A, B, C, D, L, I
 jobScores {same}                          0–10, what their current job asks (optional)
 answers / jobAnswers  [24 ints 1–5]       survey only
-source: "ci", ci: {traits:{A..I}, job:{A..I}, traitsArrow, jobArrow, pattern}   Culture Index uploads only
+source: "ci", ci: {traits:{A..I}, job:{A..I}, traitsArrow, jobArrow, traitsEU, jobEU, pattern}   Culture Index uploads only
+(no source = the app's own quick survey)
 ```
 `results.mjs` `clean()` keeps only these fields. Update it if you add fields.
+Older records used `pac` (Pace, high = fast). Both `clean()` and the page (`normRec`) turn it into `pat = 10 − pac`.
+
+## Aligned with Culture Index
+
+The Send uses Culture Index (CI), so the app follows CI's own guide ("How to Read a Culture Index Graph"):
+- Traits use CI letters, names and directions: A Autonomy, B Social ability, C Patience (high = steady,
+  patient; low = urgent, fast), D Conformity, L Logic, I Ingenuity. Internal keys stay ini/ppl/pat/str/log/cre.
+- Uploading the CI report is the main path on the home page. The app's 24-statement survey is a "quick survey",
+  labelled as not Culture Index everywhere, drawn as dashed dots on team charts, and the Team shape tab can
+  filter to "Culture Index only". Never copy CI's adjective list into the app: it is CI's survey.
+- Energy units (EU): natural and job EU are stored with CI uploads (typed in; the photo reader also asks for
+  them, the PDF vector reader does not read them yet). Job EU ≥ 10 % above natural = giving more energy than
+  they have; ≥ 10 % below = possible low morale or under-used. Shown on the person page and Team shape.
+- Big job stretch = a move of ≥ 3 on 2 or more traits at once (CI warns about large moves on several traits).
+- **Open question for a trained CI reader:** the Job graph is read against the *Traits* arrow (so the dot
+  moves match CI's drawing). CI says each graph has its own arrow. For Uriah (traits arrow 2.75, job arrow 7)
+  the two readings differ a lot. Change `saveCI()` (`ciMap(ci.job, ci.traitsArrow)`) once The Send confirms.
 
 ## Scoring (all in index.html)
 
 - Survey: 6 traits × 4 statements, one reverse-scored per trait, mapped to 0–10. Part 2 repeats the same
   statements as "how much does your job ask this of you".
-- Culture Index → app traits: A→Initiative, B→People energy, C→Pace (reversed: 10 − C), D→Structure,
-  L→Logic, I→Creativity. A–D are read **relative to the red arrow** of the Traits chart (arrow becomes 5).
+- Culture Index → app traits: A, B, C, D, L, I map straight across (C is no longer reversed). A–D are read **relative to the red arrow** of the Traits chart (arrow becomes 5).
   The Job chart uses the Traits arrow too, so the gap between the charts matches how CI draws it. L and I are absolute.
 - CI PDF reader (`parseCIPdf`): uses pdf.js 3.11.174 from cdnjs. It reads the vector drawing of page 1: dots by
   fill colour (A red, B yellow, C blue, D green, L purple, I light blue), first six = Traits, next six = Job;
@@ -83,11 +100,11 @@ source: "ci", ci: {traits:{A..I}, job:{A..I}, traitsArrow, jobArrow, pattern}   
 
 Four tabs: **Team shape** (default), People, **Compare**, Lanes and job fit.
 
-- Team shape (`vShape`): one 0–10 line per trait with a dot per person (initials, own colour, stacked when
+- Team shape (`vShape`): Everyone / Culture Index only switch; one 0–10 line per trait with a dot per person (initials, own colour, stacked when
   close), the team average as a dark line, and the names at each end (≤ 3.5 and ≥ 6.5). Above it, cards from
   `teamInsights()`: where the team leans (average ≥ 6.5 or ≤ 3.5, else the most extreme trait if ≥ 1 from 5),
   ends nobody covers and ends only one person covers (shown from 3 people up), and the traits where jobs pull
-  hardest (mean job − natural ≥ 1.5). Respects the lane filter. Tapping a dot opens that person in People.
+  hardest (mean job − natural ≥ 1.5), and people whose job EU is well above or below their natural EU. Respects the lane filter. Tapping a dot opens that person in People.
 - Compare (`vCompare`): pick 2–4 people, natural or job profile, same dot lines plus numbers, then one talking
   point per pair from `pairTalk()` (largest difference ≥ 3, and shared highs).
 - Person colours: `--c1`…`--c12`, assigned by alphabetical order of all results, so a person keeps one colour.
@@ -95,9 +112,7 @@ Four tabs: **Team shape** (default), People, **Compare**, Lanes and job fit.
 
 ## Known items / next steps
 
-1. Seed data: Uriah's record was saved before arrows were read. It has been recalculated in seed.json from his
-   PDF (traits arrow 2.75, job arrow 7). Andrew Lee's record keeps its claude.ai id, so if he retakes it on Netlify
-   he'll get a second entry; delete the old one as admin.
+1. Seed data is empty in this public repo. Uriah and Andrew re-enter their results after the first deploy.
 2. Have a fluent Khmer speaker review every Khmer string (all statements, lane names, lane "why" lines).
 3. Consider vendoring pdf.js into `public/vendor/` instead of loading it from cdnjs.
 4. Lane targets may need tuning; consider making them editable by the admin (store in Blobs).

@@ -7,7 +7,7 @@ import { getStore } from "@netlify/blobs";
 import seed from "../../data/seed.json";
 
 const LANES = ["point","outcomes","mobilization","finance","media","communications","operations","worship","outreach","systems","other"];
-const TRAITS = ["ini","ppl","pac","str","log","cre"];
+const TRAITS = ["ini","ppl","pat","str","log","cre"];
 const ID_RE = /^[A-Za-z0-9_-]{1,80}$/;
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
@@ -36,6 +36,8 @@ const str = (v, n) => (typeof v === "string" ? v.slice(0, n) : "");
 const num10 = (v) => (typeof v === "number" && isFinite(v) ? Math.min(10, Math.max(0, Math.round(v * 10) / 10)) : null);
 const scoreObj = (o) => {
   if (!o || typeof o !== "object") return null;
+  // Older records used "pac" (Pace, high = fast). Culture Index direction is Patience (high = steady).
+  if (o.pat == null && typeof o.pac === "number") o = { ...o, pat: 10 - o.pac };
   const out = {};
   for (const k of TRAITS) { const v = num10(o[k]); if (v == null) return null; out[k] = v; }
   return out;
@@ -66,7 +68,7 @@ function clean(body) {
   if (body.source === "ci") {
     rec.source = "ci";
     const c = body.ci || {};
-    rec.ci = { traits: ciRows(c.traits), job: ciRows(c.job), traitsArrow: str(String(c.traitsArrow ?? ""), 6), jobArrow: str(String(c.jobArrow ?? ""), 6), pattern: str(c.pattern, 40) };
+    rec.ci = { traits: ciRows(c.traits), job: ciRows(c.job), traitsArrow: str(String(c.traitsArrow ?? ""), 6), jobArrow: str(String(c.jobArrow ?? ""), 6), traitsEU: str(String(c.traitsEU ?? ""), 4), jobEU: str(String(c.jobEU ?? ""), 4), pattern: str(c.pattern, 40) };
   }
   return rec;
 }

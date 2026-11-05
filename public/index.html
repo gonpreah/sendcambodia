@@ -206,6 +206,8 @@ h3 .p.km{font-family:Koulen,sans-serif;font-weight:400;font-size:20px}
 .strip-field .avgline{position:absolute;width:2px;background:var(--ink);opacity:.55;border-radius:1px}
 .pdot{position:absolute;width:26px;height:26px;margin-left:-13px;border-radius:50%;display:grid;place-items:center;font-family:Archivo,"Kantumruy Pro",sans-serif;font-size:10.5px;font-weight:800;color:#fff;border:2px solid var(--bg);padding:0;line-height:1}
 .pdot.me{box-shadow:0 0 0 2px var(--ink)}
+.pdot.survey{border-width:2.5px;border-style:dashed}
+.srcpill.survey{border-style:dashed}
 .who-ends{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:4px}
 .who-ends span:last-child{text-align:right}
 .people-key{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13px;margin:12px 0 0}
@@ -224,6 +226,8 @@ h3 .p.km{font-family:Koulen,sans-serif;font-weight:400;font-size:20px}
 .segmented button{border:0;background:none;padding:5px 12px;font-size:13px}
 .segmented button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .talk{padding-left:18px;margin:8px 0 0}.talk li{margin:8px 0}
+/* Khmer text always uses a Khmer font (headings keep Koulen through .p.km) */
+[lang="km"]{font-family:"Kantumruy Pro","Noto Sans Khmer",sans-serif}
 .back{background:none;border:0;color:var(--accent-text);font-weight:600;padding:2px 0 12px;font-size:16px}
 .hide{display:none!important}
 @media (max-width:420px){ h1 .p{font-size:36px} .qtext .p{font-size:22px} }
@@ -249,12 +253,12 @@ h3 .p.km{font-family:Koulen,sans-serif;font-weight:400;font-size:20px}
 <script>
 /* ---------- content ---------- */
 const TRAITS = [
-  {k:'ini', en:'Initiative', km:'ការផ្តួចផ្តើម', lo:['Supportive team player','អ្នកគាំទ្រក្រុម'], hi:['Independent self-starter','ផ្តួចផ្តើមដោយខ្លួនឯង']},
-  {k:'ppl', en:'People energy', km:'ភាពរួសរាយ', lo:['Reserved, focused','ស្ងប់ស្ងាត់ ផ្តោតលើការងារ'], hi:['Outgoing, persuasive','រួសរាយ ចូលចិត្តជួបមនុស្ស']},
-  {k:'pac', en:'Pace', km:'ល្បឿនការងារ', lo:['Steady, consistent','ថេរ និងជាប់លាប់'], hi:['Fast, flexible','រហ័ស និងបត់បែន']},
-  {k:'str', en:'Structure', km:'ភាពម៉ត់ចត់', lo:['Flexible, big-picture','បត់បែន មើលរូបភាពធំ'], hi:['Precise, careful','ម៉ត់ចត់ ប្រុងប្រយ័ត្ន']},
-  {k:'log', en:'Logic', km:'ការគិតតាមហេតុផល', lo:['People-centered decisions','សម្រេចចិត្តដោយគិតពីមនុស្ស'], hi:['Fact-driven decisions','សម្រេចចិត្តផ្អែកលើការពិត']},
-  {k:'cre', en:'Creativity', km:'ភាពច្នៃប្រឌិត', lo:['Practical, proven ways','វិធីជាក់ស្តែងដែលបានបញ្ជាក់'], hi:['Inventive, visionary','មានគំនិតច្នៃប្រឌិតថ្មីៗ']},
+  {k:'ini', l:'A', en:'A · Autonomy', km:'A · ស្វ័យភាព', lo:['Collaborative, cautious','សហការ និងប្រុងប្រយ័ត្ន'], hi:['Independent, assertive','ឯករាជ្យ និងម៉ឺងម៉ាត់']},
+  {k:'ppl', l:'B', en:'B · Social ability', km:'B · សមត្ថភាពសង្គម', lo:['Reserved, task-focused','ស្ងប់ស្ងាត់ ផ្តោតលើការងារ'], hi:['Outgoing, persuasive','រួសរាយ និងចេះបញ្ចុះបញ្ចូល']},
+  {k:'pat', l:'C', en:'C · Patience', km:'C · ការអត់ធ្មត់', lo:['Urgent, fast, multitasking','ប្រញាប់ រហ័ស ធ្វើច្រើនការងារព្រមគ្នា'], hi:['Steady, patient','ថេរ និងអត់ធ្មត់']},
+  {k:'str', l:'D', en:'D · Conformity', km:'D · ការគោរពតាមរបៀប', lo:['Generalist, flexible with rules','មើលទូទៅ បត់បែនតាមច្បាប់'], hi:['Detailed, structured','ម៉ត់ចត់ និងមានរបៀប']},
+  {k:'log', l:'L', en:'L · Logic', km:'L · ហេតុផល', lo:['Leads with feeling and intuition','ដឹកនាំដោយអារម្មណ៍ និងវិចារណញាណ'], hi:['Leads with facts and analysis','ដឹកនាំដោយការពិត និងការវិភាគ']},
+  {k:'cre', l:'I', en:'I · Ingenuity', km:'I · ភាពប៉ិនប្រសប់', lo:['Proven, traditional methods','វិធីដែលបានបញ្ជាក់ និងតាមទម្លាប់'], hi:['Inventive, new ways','ច្នៃប្រឌិត រកវិធីថ្មីៗ']},
 ];
 const BANK = {
   ini:[
@@ -269,11 +273,11 @@ const BANK = {
     ['I enjoy speaking in front of a group.','ខ្ញុំចូលចិត្តនិយាយនៅមុខក្រុម។',0],
     ['After a long day with people, I need time alone to recharge.','បន្ទាប់ពីនៅជាមួយមនុស្សពេញមួយថ្ងៃ ខ្ញុំត្រូវការពេលនៅម្នាក់ឯង ដើម្បីបន្ថែមកម្លាំង។',1],
   ],
-  pac:[
-    ['I like working on many things at the same time.','ខ្ញុំចូលចិត្តធ្វើការងារច្រើនក្នុងពេលតែមួយ។',0],
-    ['I get restless when work moves slowly.','ខ្ញុំអន្ទះអន្ទែង ពេលការងារដើរយឺត។',0],
-    ['I’m fine when plans change suddenly.','ខ្ញុំមិនមានបញ្ហាទេ ពេលផែនការផ្លាស់ប្តូរភ្លាមៗ។',0],
-    ['I prefer a steady routine where I know what each day will look like.','ខ្ញុំចូលចិត្តទម្លាប់ការងារទៀងទាត់ ដែលខ្ញុំដឹងថាថ្ងៃនីមួយៗនឹងមានអ្វីខ្លះ។',1],
+  pat:[
+    ['I like working on many things at the same time.','ខ្ញុំចូលចិត្តធ្វើការងារច្រើនក្នុងពេលតែមួយ។',1],
+    ['I get restless when work moves slowly.','ខ្ញុំអន្ទះអន្ទែង ពេលការងារដើរយឺត។',1],
+    ['I’m fine when plans change suddenly.','ខ្ញុំមិនមានបញ្ហាទេ ពេលផែនការផ្លាស់ប្តូរភ្លាមៗ។',1],
+    ['I prefer a steady routine where I know what each day will look like.','ខ្ញុំចូលចិត្តទម្លាប់ការងារទៀងទាត់ ដែលខ្ញុំដឹងថាថ្ងៃនីមួយៗនឹងមានអ្វីខ្លះ។',0],
   ],
   str:[
     ['I like clear rules and step-by-step instructions.','ខ្ញុំចូលចិត្តច្បាប់ច្បាស់លាស់ និងការណែនាំមួយជំហានម្តងៗ។',0],
@@ -324,7 +328,7 @@ const LANES = [
   {k:'finance', en:'Finance Director', km:'នាយកផ្នែកហិរញ្ញវត្ថុ', keys:[
     {t:'str',min:6.5, why:['Trustworthy with money, and organized','គួរឲ្យទុកចិត្តលើលុយកាក់ និងមានរបៀបរៀបរយ']},
     {t:'log',min:6.5, why:['Clear about the numbers','ច្បាស់លាស់អំពីតួលេខ']},
-    {t:'pac',max:5, why:['Calm under pressure','នៅស្ងប់ ពេលមានសម្ពាធ']},
+    {t:'pat',min:5, why:['Calm under pressure','នៅស្ងប់ ពេលមានសម្ពាធ']},
   ]},
   {k:'media', en:'Media Director', km:'នាយកផ្នែកប្រព័ន្ធផ្សព្វផ្សាយ', keys:[
     {t:'cre',min:6.5, why:['Creative storyteller and marketer','អ្នកច្នៃប្រឌិត និទានរឿង និងធ្វើទីផ្សារ']},
@@ -349,13 +353,13 @@ const LANES = [
   ]},
   {k:'outreach', en:'Outreach Director', km:'នាយកផ្នែកផ្សាយដំណឹងល្អ', keys:[
     {t:'ppl',min:6.5, why:['An evangelist who works across churches and ministries','អ្នកផ្សាយដំណឹងល្អ ដែលធ្វើការជាមួយក្រុមជំនុំ និងក្រុមបម្រើជាច្រើន']},
-    {t:'pac',min:6, why:['Thrives in the field','រីកចម្រើននៅទីវាល']},
+    {t:'pat',max:4, why:['Thrives in the field','រីកចម្រើននៅទីវាល']},
     {t:'str',min:4.5, why:['An evangelist who organizes','អ្នកផ្សាយដំណឹងល្អ ដែលចេះរៀបចំ']},
   ]},
   {k:'systems', en:'Systems Director', km:'នាយកផ្នែកប្រព័ន្ធ', keys:[
     {t:'str',min:7, why:['Careful and reliable','ប្រុងប្រយ័ត្ន និងគួរឲ្យទុកចិត្ត']},
     {t:'log',min:6.5, why:['Comfortable with CRM and data','ស្ទាត់ជំនាញជាមួយ CRM និងទិន្នន័យ']},
-    {t:'pac',max:5, why:['Steady, keeps the weekly entry accurate','ខ្ជាប់ខ្ជួន រក្សាការបញ្ចូលប្រចាំសប្តាហ៍ឲ្យត្រឹមត្រូវ']},
+    {t:'pat',min:5, why:['Steady, keeps the weekly entry accurate','ខ្ជាប់ខ្ជួន រក្សាការបញ្ចូលប្រចាំសប្តាហ៍ឲ្យត្រឹមត្រូវ']},
   ]},
   {k:'other', en:'Supporting team', km:'ក្រុមគាំទ្រ', keys:[]},
 ];
@@ -403,7 +407,8 @@ const SCALE2 = [
   ['A lot','ច្រើន'],
   ['Very much','ច្រើនណាស់'],
 ];
-const BIG_GAP = 3;
+const BIG_GAP = 3, STRETCH_TRAITS = 2;
+function bigStretch(r){ const g=gaps(r); return !!g && TRAITS.filter(t=>Math.abs(g[t.k])>=BIG_GAP).length>=STRETCH_TRAITS; }
 
 /* ---------- state ---------- */
 let lang = 'km';
@@ -417,7 +422,7 @@ let lastResult = null, saveState = null;
 let db=null, user=null, myId=null, isOwner=false, downloads=null;
 let results=[], dbState='connecting';
 let teamFilter='all', teamSort='name', teamTab='shape', openId=null, confirmDel=null;
-let compareIds=[], compareMode='natural';
+let compareIds=[], compareMode='natural', ciOnly=false;
 
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
@@ -440,6 +445,24 @@ function maxGap(r){ const g=gaps(r); if(!g) return 0; return Math.max(...TRAITS.
 function totalGap(r){ const g=gaps(r); if(!g) return 0; return TRAITS.reduce((a,t)=>a+Math.abs(g[t.k]),0); }
 function sigHTML(sc,big){ return `<div class="sig${big?' big':''}" aria-hidden="true">${TRAITS.map(t=>`<i style="height:${Math.max(6,(sc?.[t.k]??0)*10)}%"></i>`).join('')}</div>`; }
 function avgScores(list,key='scores'){ const l=list.filter(r=>r[key]); if(!l.length) return null; const o={}; for(const t of TRAITS){ o[t.k]=Math.round(l.reduce((a,r)=>a+(r[key][t.k]||0),0)/l.length*10)/10; } return o; }
+// Records saved before the switch to Culture Index direction have 'pac' (Pace, high = fast).
+function normRec(r){
+  for(const k of ['scores','jobScores']){ const o=r[k]; if(o && o.pac!=null && o.pat==null){ r[k]={...o, pat:Math.round((10-o.pac)*10)/10}; delete r[k].pac; } }
+  return r;
+}
+const isCI = r => r.source==='ci';
+const euNum = v => { const n=parseFloat(String(v??'').replace(',','.')); return isFinite(n)&&n>0&&n<200 ? Math.round(n) : null; };
+function euOf(r){ if(!isCI(r)) return null; const a=euNum(r.ci?.traitsEU), b=euNum(r.ci?.jobEU); return a&&b?{a,b,d:b-a,pct:Math.round((b-a)/a*100)}:a?{a}:null; }
+function euHTML(r){
+  const e=euOf(r); if(!e) return '';
+  if(e.b==null) return `<p class="note">${one(`Energy units: ${e.a}`,`ឯកតាថាមពល៖ ${e.a}`)}</p>`;
+  const msg = e.pct>=10 ? ['The job graph uses more energy than the person naturally has. That can be sustained for a while, but it costs energy over time.','ក្រាហ្វការងារប្រើថាមពលច្រើនជាងថាមពលធម្មជាតិ។ អាចធ្វើបានមួយរយៈ ប៉ុន្តែវាប្រើថាមពលច្រើនតាមពេលវេលា។']
+    : e.pct<=-10 ? ['The job graph uses less energy than the person naturally has. That can point to low morale or someone who could carry more.','ក្រាហ្វការងារប្រើថាមពលតិចជាងថាមពលធម្មជាតិ។ នេះអាចបង្ហាញពីកម្លាំងចិត្តទាប ឬមនុស្សដែលអាចទទួលខុសត្រូវច្រើនជាងនេះ។']
+    : ['Job energy is close to natural energy.','ថាមពលការងារជិតនឹងថាមពលធម្មជាតិ។'];
+  return `<div class="fitbox"><h3>${L('Energy units (EU)','ឯកតាថាមពល (EU)')}</h3>
+    <div class="fr-nums" style="margin:4px 0 6px">${one('Natural','ធម្មជាតិ')} ${e.a} · ${one('Job','ការងារ')} ${e.b} (${e.d>0?'+':''}${e.d})</div>
+    <div>${L(msg[0],msg[1])}</div></div>`;
+}
 function displayName(r){ return r.name || one('Unnamed','គ្មានឈ្មោះ'); }
 const fmtGap = g => (g>0?'+':'')+g.toFixed(1);
 
@@ -453,7 +476,7 @@ const CI_ROWS = [
   {l:'L', en:'L · Logic', km:'L · ហេតុផល'},
   {l:'I', en:'I · Ingenuity', km:'I · ភាពប៉ិនប្រសប់'},
 ];
-const blankCI = () => ({traits:{A:'',B:'',C:'',D:'',L:'',I:''}, job:{A:'',B:'',C:'',D:'',L:'',I:''}, traitsArrow:'', jobArrow:'', pattern:''});
+const blankCI = () => ({traits:{A:'',B:'',C:'',D:'',L:'',I:''}, job:{A:'',B:'',C:'',D:'',L:'',I:''}, traitsArrow:'', jobArrow:'', traitsEU:'', jobEU:'', pattern:''});
 let ci = blankCI(), ciFile=null, ciStatus=null, ciErr='', ciEdit=false, sample=null, canImages=false;
 const ciNum = v => { const n=parseFloat(String(v??'').replace(',','.')); return isFinite(n)&&n>=0&&n<=10 ? Math.round(n*10)/10 : null; };
 const ciComplete = o => CI_ROWS.every(r=>ciNum(o[r.l])!=null);
@@ -462,17 +485,18 @@ const clamp10 = n => Math.round(Math.min(10,Math.max(0,n))*10)/10;
 function ciMap(o, arrowRaw){
   const ar = ciNum(arrowRaw) ?? 5;
   const rel = v => clamp10(5 + (ciNum(v) - ar));
-  return {ini:rel(o.A), ppl:rel(o.B), pac:clamp10(10-rel(o.C)), str:rel(o.D), log:ciNum(o.L), cre:ciNum(o.I)};
+  return {ini:rel(o.A), ppl:rel(o.B), pat:rel(o.C), str:rel(o.D), log:ciNum(o.L), cre:ciNum(o.I)};
 }
 const ciCanSave = () => !!(form.name.trim() && form.lane && ciComplete(ci.traits));
 
 function vCI(){
-  const grid = (key, arrowKey, en, km) => `
+  const grid = (key, arrowKey, euKey, en, km) => `
     <div class="ci-group">
       <h3>${L(en,km)}</h3>
       <div class="ci-grid">${CI_ROWS.map(r=>`<label class="ci-cell"><span>${one(r.en,r.km)}</span>
         <input type="number" inputmode="decimal" min="0" max="10" step="0.5" data-ci="${key}.${r.l}" value="${esc(ci[key][r.l])}" aria-label="${r.en}"></label>`).join('')}
         <label class="ci-cell"><span>${one('Red arrow','ព្រួញក្រហម')}</span><input type="number" inputmode="decimal" min="0" max="10" step="0.5" data-ci="${arrowKey}" value="${esc(ci[arrowKey])}"></label>
+        <label class="ci-cell"><span>${one('Energy units (EU)','ឯកតាថាមពល (EU)')}</span><input type="number" inputmode="numeric" min="1" max="199" step="1" data-ci="${euKey}" value="${esc(ci[euKey])}"></label>
       </div>
     </div>`;
   const readRow = (key,en,km) => `<div class="ci-read"><span class="lbl">${one(en,km)}</span>${CI_ROWS.map(r=>`<span><b>${r.l}</b> ${esc(ci[key][r.l]||'–')}</span>`).join('')}</div>`;
@@ -507,9 +531,10 @@ function vCI(){
     ${ci.pattern?`<div class="note" style="margin-top:2px">${one('Pattern','គំរូ')}: <b>${esc(ci.pattern)}</b></div>`:''}
     ${readRow('traits','Traits','លក្ខណៈ')}
     ${ciComplete(ci.job)?readRow('job','Job','ការងារ'):''}
+    <div class="ci-read"><span class="lbl">${one('Energy units (EU): type them in from the left edge of each graph','ឯកតាថាមពល (EU)៖ សូមវាយបញ្ចូលពីគែមខាងឆ្វេងនៃក្រាហ្វនីមួយៗ')}</span><span>${one('Traits','លក្ខណៈ')} ${esc(ci.traitsEU||'–')}</span><span>${one('Job','ការងារ')} ${esc(ci.jobEU||'–')}</span></div>
     <button class="link" data-act="ci-edit">${ciEdit?one('Hide the numbers','លាក់លេខ'):one('Something wrong? Fix a number','មានអ្វីខុស? កែលេខ')}</button>
   </div>`:''}
-  ${(ciEdit || ciStatus==='error')?`${grid('traits','traitsArrow','Traits: who you are','លក្ខណៈ៖ ខ្លួនអ្នកពិតប្រាកដ')}${grid('job','jobArrow','Job behaviors (optional)','ឥរិយាបថការងារ (មិនចាំបាច់)')}`:''}
+  ${(ciEdit || ciStatus==='error')?`${grid('traits','traitsArrow','traitsEU','Traits: who you are','លក្ខណៈ៖ ខ្លួនអ្នកពិតប្រាកដ')}${grid('job','jobArrow','jobEU','Job behaviors (optional)','ឥរិយាបថការងារ (មិនចាំបាច់)')}`:''}
   ${read || ciEdit || ciStatus==='error' ? `
   <label class="f" for="nm">${L('Name','ឈ្មោះ')}</label>
   <input id="nm" type="text" autocomplete="name" value="${esc(form.name)}" maxlength="60">
@@ -595,12 +620,13 @@ function applyRead(out){
   for(const key of ['traits','job']) for(const r of CI_ROWS){ const v=out?.[key]?.[r.l]; ci[key][r.l] = ok(v) ? fmt(v) : ''; }
   ci.traitsArrow = ok(out?.traitsArrow) ? fmt(out.traitsArrow) : '';
   ci.jobArrow = ok(out?.jobArrow) ? fmt(out.jobArrow) : '';
+  for(const k of ['traitsEU','jobEU']) ci[k] = euNum(out?.[k])!=null ? String(euNum(out[k])) : ci[k];
   ci.pattern = typeof out?.pattern==='string' ? out.pattern.trim().slice(0,40) : '';
   if(typeof out?.name==='string' && out.name.trim()) form.name = out.name.trim().slice(0,60);
 }
 async function readWithClaude(img){
-  const prompt = `The image is page 1 of a Culture Index report. Near the top left is the person's name, and under it may be a pattern name such as "Daredevil". The page has two charts: "Survey Traits" and "Job Behaviors". Each chart has rows A, B, C and D in the upper box and rows L and I in the lower box, all on a 0 to 10 scale shown along the top of each box. Each row has one coloured dot; read where the centre of each dot sits on the scale, to the nearest 0.5. Each chart also has a vertical red arrow in the upper box; read its position on the same scale, to the nearest 0.5. Reply with JSON only, in exactly this shape, using null for anything you cannot read clearly:
-{"name":"","pattern":"","traits":{"A":0,"B":0,"C":0,"D":0,"L":0,"I":0},"traitsArrow":0,"job":{"A":0,"B":0,"C":0,"D":0,"L":0,"I":0},"jobArrow":0}`;
+  const prompt = `The image is page 1 of a Culture Index report. Near the top left is the person's name, and under it may be a pattern name such as "Daredevil". The page has two charts: "Survey Traits" and "Job Behaviors". Each chart has rows A, B, C and D in the upper box and rows L and I in the lower box, all on a 0 to 10 scale shown along the top of each box. Each row has one coloured dot; read where the centre of each dot sits on the scale, to the nearest 0.5. Each chart also has a vertical red arrow in the upper box; read its position on the same scale, to the nearest 0.5. At the left edge of each chart, just above the dividing bar, is a whole number: the Energy Units (EU). Reply with JSON only, in exactly this shape, using null for anything you cannot read clearly:
+{"name":"","pattern":"","traits":{"A":0,"B":0,"C":0,"D":0,"L":0,"I":0},"traitsArrow":0,"traitsEU":0,"job":{"A":0,"B":0,"C":0,"D":0,"L":0,"I":0},"jobArrow":0,"jobEU":0}`;
   return await sample.json(prompt, {images:[img], modelTier:'default'});
 }
 async function readReport(){
@@ -630,7 +656,7 @@ async function saveCI(){
   if(!ciCanSave()) return;
   const rec={name:form.name.trim().slice(0,60), lane:form.lane, role:'', source:'ci',
     scores:ciMap(ci.traits, ci.traitsArrow),
-    ci:{traits:{...ci.traits}, job:{...ci.job}, traitsArrow:ci.traitsArrow, jobArrow:ci.jobArrow, pattern:ci.pattern.trim().slice(0,40)}, updatedAt:Date.now()};
+    ci:{traits:{...ci.traits}, job:{...ci.job}, traitsArrow:ci.traitsArrow, jobArrow:ci.jobArrow, traitsEU:ci.traitsEU, jobEU:ci.jobEU, pattern:ci.pattern.trim().slice(0,40)}, updatedAt:Date.now()};
   // Job behaviors use the traits arrow too, so the gap between the two charts stays as Culture Index draws it.
   if(ciComplete(ci.job)) rec.jobScores = ciMap(ci.job, ci.traitsArrow);
   const id = form.forOther ? ('p'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)) : myId;
@@ -639,7 +665,7 @@ async function saveCI(){
   if(db && id){ try{ await db.collection('results').doc(id).set(rec); saveState='saved'; }catch(err){ saveState='failed'; } }
   go('mine');
 }
-function srcTag(r){ return r.source==='ci' ? ` <span class="srcpill">Culture Index${r.ci?.pattern?' · '+esc(r.ci.pattern):''}</span>` : ''; }
+function srcTag(r){ return r.source==='ci' ? ` <span class="srcpill">Culture Index${r.ci?.pattern?' · '+esc(r.ci.pattern):''}</span>` : ` <span class="srcpill survey">${one('Quick survey','ការស្ទង់មតិរហ័ស')}</span>`; }
 
 /* ---------- routing ---------- */
 function go(v){
@@ -665,13 +691,13 @@ function vHome(){
   <h1>${lang==='km'
     ? `<span class="p km" lang="km">ទម្រង់របៀបធ្វើការ</span><span class="s en" lang="en">The Send Cambodia executive team</span>`
     : `<span class="p en" lang="en">Team work style profile</span><span class="s en" lang="en">The Send Cambodia executive team</span>`}</h1>
-  <div class="lede">${L('Two parts, 24 short statements each, about 12 minutes. Part 1 is who you naturally are. Part 2 is what your job asks of you. The difference between them shows where work stretches you.',
-    'មានពីរផ្នែក ផ្នែកនីមួយៗមានសេចក្តីថ្លែងខ្លីៗ ២៤ ប្រហែល ១២ នាទី។ ផ្នែកទី ១ គឺលក្ខណៈធម្មជាតិរបស់អ្នក។ ផ្នែកទី ២ គឺអ្វីដែលការងាររបស់អ្នកតម្រូវ។ ភាពខុសគ្នារវាងផ្នែកទាំងពីរ បង្ហាញពីកន្លែងដែលការងារទាញអ្នកឲ្យប្រឹងប្រែងខ្លាំង។')}</div>
+  <div class="lede">${L('The Send uses Culture Index. Upload your Culture Index report (the PDF) to add your profile. No report yet? The quick survey gives a rough picture until you have one.',
+    'The Send ប្រើ Culture Index។ សូមផ្ទុករបាយការណ៍ Culture Index (PDF) របស់អ្នក ដើម្បីបន្ថែមទម្រង់របស់អ្នក។ មិនទាន់មានរបាយការណ៍? ការស្ទង់មតិរហ័សផ្តល់រូបភាពប្រហាក់ប្រហែល រហូតដល់អ្នកមានរបាយការណ៍។')}</div>
   <div class="traits-intro">${TRAITS.map(t=>`<div class="chip-trait">${L(t.en,t.km)}</div>`).join('')}</div>
   <div class="btn-col">
-    <button class="btn" data-act="start">${L(mine?'Take it again':'Start','ចាប់ផ្តើម'+(mine?'ម្តងទៀត':''))}</button>
+    <button class="btn" data-act="start-ci">${L('Upload my Culture Index report','ផ្ទុករបាយការណ៍ Culture Index របស់ខ្ញុំ')}</button>
     ${mine?`<button class="btn ghost" data-act="mine">${L('See my result','មើលលទ្ធផលរបស់ខ្ញុំ')}</button>`:''}
-    <button class="btn ghost" data-act="start-ci">${L('Upload my Culture Index report','ផ្ទុករបាយការណ៍ Culture Index របស់ខ្ញុំ')}</button>
+    <button class="btn ghost" data-act="start">${L('No report yet? Take the quick survey (12 min)','មិនទាន់មានរបាយការណ៍? ធ្វើការស្ទង់មតិរហ័ស (១២ នាទី)')}<span class="s">${one('Not Culture Index: a rough guide only','មិនមែន Culture Index ទេ៖ គ្រាន់តែជាការណែនាំប្រហាក់ប្រហែល')}</span></button>
     <button class="btn ghost" data-act="team">${L('See team results','មើលលទ្ធផលក្រុម')}${results.length?` <span class="s">(${results.length})</span>`:''}</button>
   </div>
   <p class="note">${L('There are no right or wrong answers. This is a conversation tool for understanding how we each work best. It is not a test you pass or fail, and it should not decide anyone’s job.',
@@ -771,6 +797,7 @@ function vMine(){
   ${msg}
   ${fitHTML(r)}
   ${summaryHTML(r)}
+  ${euHTML(r)}
   ${barsHTML(r, others.length?avg:null)}
   ${!r.jobScores&&r.source!=='ci'?`<p class="note">${L('This result is from before part 2 was added. Take it again to see what your job asks of you.','លទ្ធផលនេះធ្វើមុនពេលបន្ថែមផ្នែកទី ២។ សូមធ្វើម្តងទៀត ដើម្បីមើលអ្វីដែលការងាររបស់អ្នកតម្រូវ។')}</p>`:''}
   ${!r.lane?`<p class="note">${L('No lane was chosen for this result. Take it again and pick a lane to see the job fit.','លទ្ធផលនេះមិនទាន់ជ្រើសផ្នែក។ សូមធ្វើម្តងទៀត ហើយជ្រើសផ្នែក ដើម្បីមើលភាពស៊ីគ្នាជាមួយការងារ។')}</p>`:''}
@@ -816,10 +843,10 @@ function dotField(entries, cls, avgV){
   return `<div class="${cls}" style="height:${h}px">
     <span class="rail" style="top:${ROW/2-2}px"></span>
     ${avgV!=null?`<span class="avgline" style="left:calc(${avgV*10}% - 1px);top:-4px;height:${h+8}px"></span>`:''}
-    ${placed.map(e=>`<button class="pdot${e.r.id===myId?' me':''}" data-goto="${esc(e.r.id)}" style="left:${e.v*10}%;top:${e.row*ROW+2}px;background:${colorOf(e.r)}" title="${esc(displayName(e.r))} · ${e.v.toFixed(1)}" aria-label="${esc(displayName(e.r))} ${e.v.toFixed(1)}">${esc(initials(e.r))}</button>`).join('')}
+    ${placed.map(e=>`<button class="pdot${e.r.id===myId?' me':''}${isCI(e.r)?'':' survey'}" data-goto="${esc(e.r.id)}" style="left:${e.v*10}%;top:${e.row*ROW+2}px;${isCI(e.r)?`background:${colorOf(e.r)}`:`background:var(--bg);border-color:${colorOf(e.r)};color:${colorOf(e.r)}`}" title="${esc(displayName(e.r))} · ${e.v.toFixed(1)}${isCI(e.r)?'':' · '+one('quick survey','ការស្ទង់មតិរហ័ស')}" aria-label="${esc(displayName(e.r))} ${e.v.toFixed(1)}">${esc(initials(e.r))}</button>`).join('')}
   </div>`;
 }
-function peopleKey(list){ return `<div class="people-key">${byName(list).map(r=>`<span><i style="background:${colorOf(r)}"></i>${esc(displayName(r))}${r.id===myId?` <small>(${one('you','អ្នក')})</small>`:''}</span>`).join('')}</div>`; }
+function peopleKey(list){ return `<div class="people-key">${byName(list).map(r=>`<span><i style="${isCI(r)?`background:${colorOf(r)}`:`border:2px dashed ${colorOf(r)}`}"></i>${esc(displayName(r))}${r.id===myId?` <small>(${one('you','អ្នក')})</small>`:''}</span>`).join('')}</div>`; }
 
 function teamInsights(list){
   const avg=avgScores(list), n=list.length, out={leans:[],gaps:[],thin:[],pull:[]};
@@ -839,6 +866,8 @@ function teamInsights(list){
     out.pull.sort((x,y)=>Math.abs(y.g)-Math.abs(x.g));
   }
   out.withJob=withJob.length;
+  out.euUp=list.filter(r=>{ const e=euOf(r); return e?.b!=null && e.pct>=10; });
+  out.euDown=list.filter(r=>{ const e=euOf(r); return e?.b!=null && e.pct<=-10; });
   return out;
 }
 const endEn = (t,end)=>end==='hi'?t.hi[0]:t.lo[0], endKm=(t,end)=>end==='hi'?t.hi[1]:t.lo[1];
@@ -851,9 +880,18 @@ function laneFilterHTML(){
   </div>`;
 }
 
+function sourceToggle(){
+  const nSurvey = results.filter(r=>!isCI(r)).length;
+  if(!nSurvey) return '';
+  return `<div class="segmented" role="group">
+    <button data-cionly="0" aria-pressed="${!ciOnly}">${one('Everyone','ទាំងអស់')}</button>
+    <button data-cionly="1" aria-pressed="${ciOnly}">${one('Culture Index only','តែ Culture Index')}</button>
+  </div>
+  ${ciOnly?'':`<p class="note" style="margin-top:2px">${one(`Dashed dots are the quick survey (${nSurvey}), not Culture Index. Read them as a rough guide.`,`ចំណុចបន្ទាត់ដាច់ៗ គឺការស្ទង់មតិរហ័ស (${nSurvey} នាក់) មិនមែន Culture Index ទេ។ សូមអានវាជាការណែនាំប្រហាក់ប្រហែល។`)}</p>`}`;
+}
 function vShape(){
-  const list = results.filter(r=>teamFilter==='all'||laneOf(r.lane).k===teamFilter);
-  if(!list.length) return laneFilterHTML();
+  const list = results.filter(r=>(teamFilter==='all'||laneOf(r.lane).k===teamFilter) && (!ciOnly||isCI(r)));
+  if(!list.length) return laneFilterHTML()+sourceToggle()+`<div class="empty">${one('No one here yet.','មិនទាន់មាននរណាម្នាក់នៅទីនេះទេ។')}</div>`;
   const avg=avgScores(list), ins=teamInsights(list);
   const li = (en,km)=>`<li>${one(en,km)}</li>`;
   const cards=[];
@@ -870,8 +908,12 @@ function vShape(){
   if(ins.pull.length) cards.push(`<div class="insight job"><div class="ih">${one(`Where our jobs stretch us most (${ins.withJob} with a job profile)`,`កន្លែងដែលការងារទាញយើងខ្លាំងបំផុត (${ins.withJob} នាក់មានទម្រង់ការងារ)`)}</div><ul>${ins.pull.slice(0,3).map(x=>li(
     `<b>${x.t.en}</b>: jobs ask for ${x.g>0?'more':'less'} than people naturally bring (${fmtGap(x.g)} on average), toward “${(x.g>0?x.t.hi[0]:x.t.lo[0]).toLowerCase()}”`,
     `<b>${x.t.km}</b>៖ ការងារតម្រូវ${x.g>0?'ច្រើន':'តិច'}ជាងលក្ខណៈធម្មជាតិ (${fmtGap(x.g)} ជាមធ្យម) ទៅរក «${x.g>0?x.t.hi[1]:x.t.lo[1]}»`)).join('')}</ul></div>`);
+  if(ins.euUp.length) cards.push(`<div class="insight blind"><div class="ih">${one('Giving more energy than they naturally have (job EU higher)','ផ្តល់ថាមពលច្រើនជាងថាមពលធម្មជាតិ (EU ការងារខ្ពស់ជាង)')}</div><ul>${ins.euUp.map(r=>{ const e=euOf(r); return li(`${esc(displayName(r))}: ${e.a} → ${e.b}`,`${esc(displayName(r))}៖ ${e.a} → ${e.b}`); }).join('')}</ul>
+    <p class="note" style="margin-top:6px">${one('Worth a check-in: this costs energy over time.','គួរសួរសុខទុក្ខ៖ វាប្រើថាមពលច្រើនតាមពេលវេលា។')}</p></div>`);
+  if(ins.euDown.length) cards.push(`<div class="insight job"><div class="ih">${one('Using less energy than they have (job EU lower)','ប្រើថាមពលតិចជាងដែលមាន (EU ការងារទាបជាង)')}</div><ul>${ins.euDown.map(r=>{ const e=euOf(r); return li(`${esc(displayName(r))}: ${e.a} → ${e.b}`,`${esc(displayName(r))}៖ ${e.a} → ${e.b}`); }).join('')}</ul>
+    <p class="note" style="margin-top:6px">${one('Can point to low morale, or room to carry more.','អាចបង្ហាញពីកម្លាំងចិត្តទាប ឬលទ្ធភាពទទួលខុសត្រូវច្រើនជាងនេះ។')}</p></div>`);
   if(list.length<3) cards.push(`<p class="note">${one('Blind spots show once three or more people have taken it.','ចំណុចខ្វះខាតនឹងបង្ហាញ ពេលមានមនុស្សបីនាក់ ឬច្រើនជាងនេះបានធ្វើរួច។')}</p>`);
-  return `${laneFilterHTML()}
+  return `${laneFilterHTML()}${sourceToggle()}
   <div class="lede">${L(`Each dot is one person (${list.length}). The dark line is the team average. Tap a dot to open that person.`,`ចំណុចនីមួយៗគឺមនុស្សម្នាក់ (${list.length} នាក់)។ បន្ទាត់ខ្មៅគឺមធ្យមភាគក្រុម។ ចុចលើចំណុច ដើម្បីបើកមើលមនុស្សនោះ។`)}</div>
   <div class="insights">${cards.join('')}</div>
   <div class="strips">${TRAITS.map(t=>{
@@ -921,6 +963,7 @@ function vCompare(){
     <button data-cmode="natural" aria-pressed="${compareMode==='natural'}">${one('Natural','ធម្មជាតិ')}</button>
     <button data-cmode="job" aria-pressed="${compareMode==='job'}">${one('What the job asks','អ្វីដែលការងារតម្រូវ')}</button>
   </div>
+  ${shown.some(r=>!isCI(r))?`<p class="note">${one(`Dashed dots are the quick survey, not Culture Index: ${namesList(shown.filter(r=>!isCI(r)))}.`,`ចំណុចបន្ទាត់ដាច់ៗ គឺការស្ទង់មតិរហ័ស មិនមែន Culture Index ទេ៖ ${namesList(shown.filter(r=>!isCI(r)))}។`)}</p>`:''}
   ${missing.length?`<p class="note">${one(`No job profile yet for ${namesList(missing)}.`,`មិនទាន់មានទម្រង់ការងារសម្រាប់ ${namesList(missing)}។`)}</p>`:''}
   ${shown.length?`<div class="strips">${TRAITS.map(t=>`<div class="strip">
       <div class="bar-h"><span class="nm">${L(t.en,t.km)}</span></div>
@@ -956,7 +999,7 @@ function vTeam(){
     : list.sort((a,b)=>displayName(a).localeCompare(displayName(b)));
   const avg = avgScores(list);
   const counts = k => results.filter(r=>laneOf(r.lane).k===k).length;
-  const stretched = list.filter(r=>maxGap(r)>=BIG_GAP).length;
+  const stretched = list.filter(bigStretch).length;
   return `
   <h2>${L('Team results','លទ្ធផលក្រុម')}</h2>
   ${tabs}
@@ -978,19 +1021,20 @@ function vTeam(){
   <ul class="people">${list.map(r=>{ const f=fitOf(r); const lane=laneOf(r.lane); return `<li id="row-${esc(r.id)}">
     <button class="row" data-open="${esc(r.id)}" aria-expanded="${openId===r.id}">
       <span class="who"><b>${esc(displayName(r))}${srcTag(r)}${r.id===myId?` <small>(${one('you','អ្នក')})</small>`:''}</b><small>${esc(one(lane.en,lane.km))}${r.role?' · '+esc(r.role):''}</small>
-        ${f?fitPill(f.pct):''}${maxGap(r)>=BIG_GAP?` <span class="stretch-badge">${one('Big job stretch','ប្រឹងប្រែងខ្លាំង')}</span>`:''}</span>
+        ${f?fitPill(f.pct):''}${bigStretch(r)?` <span class="stretch-badge">${one('Big job stretch','ប្រឹងប្រែងខ្លាំង')}</span>`:''}</span>
       ${sigHTML(r.scores)}
     </button>
     ${openId===r.id?`<div class="detail">
       <div class="meta">${one('Updated','កែប្រែចុងក្រោយ')} ${new Date(r.updatedAt||0).toLocaleDateString(lang==='km'?'km-KH':'en-GB',{day:'numeric',month:'short',year:'numeric'})}</div>
       ${fitHTML(r)}
       ${summaryHTML(r)}
+      ${euHTML(r)}
       ${barsHTML(r, list.length>1?avg:null)}
       ${isOwner?`<div class="owner-tools"><button class="small-btn danger" data-del="${esc(r.id)}">${confirmDel===r.id?one('Tap again to delete','ចុចម្តងទៀតដើម្បីលុប'):one('Delete result','លុបលទ្ធផល')}</button></div>`:''}
     </div>`:''}
   </li>`; }).join('')}</ul>
-  <p class="note">${L(`The percentage shows how closely each person’s natural profile matches what their lane’s job description asks for. The six bars are the natural profile in this order: Initiative, People energy, Pace, Structure, Logic, Creativity. “Big job stretch” means their current job asks for a difference of ${BIG_GAP} or more on at least one trait.`,
-    `ភាគរយបង្ហាញថា ទម្រង់ធម្មជាតិរបស់ម្នាក់ៗ ស៊ីគ្នាប៉ុណ្ណាជាមួយអ្វីដែលការពិពណ៌នាការងារនៃផ្នែករបស់គេតម្រូវ។ របារទាំង ៦ គឺជាទម្រង់ធម្មជាតិ តាមលំដាប់៖ ការផ្តួចផ្តើម ភាពរួសរាយ ល្បឿនការងារ ភាពម៉ត់ចត់ ការគិតតាមហេតុផល ភាពច្នៃប្រឌិត។ «ប្រឹងប្រែងខ្លាំង» មានន័យថា ការងារបច្ចុប្បន្នតម្រូវឲ្យខុសពីធម្មជាតិ ${BIG_GAP} ឬលើសនោះ យ៉ាងហោចណាស់លើចំណុចមួយ។`)}</p>
+  <p class="note">${L(`The percentage shows how closely each person’s natural profile matches what their lane’s job description asks for. The six bars are the natural profile in Culture Index order: A, B, C, D, L, I. “Big job stretch” means the job asks for a move of ${BIG_GAP} or more on ${STRETCH_TRAITS} or more traits at once, which Culture Index treats as a warning sign.`,
+    `ភាគរយបង្ហាញថា ទម្រង់ធម្មជាតិរបស់ម្នាក់ៗ ស៊ីគ្នាប៉ុណ្ណាជាមួយអ្វីដែលការពិពណ៌នាការងារនៃផ្នែករបស់គេតម្រូវ។ របារទាំង ៦ គឺជាទម្រង់ធម្មជាតិ តាមលំដាប់ Culture Index៖ A, B, C, D, L, I។ «ប្រឹងប្រែងខ្លាំង» មានន័យថា ការងារតម្រូវឲ្យខុសពីធម្មជាតិ ${BIG_GAP} ឬលើសនោះ លើលក្ខណៈ ${STRETCH_TRAITS} ឬច្រើនជាងនេះក្នុងពេលតែមួយ ដែល Culture Index ចាត់ទុកជាសញ្ញាព្រមាន។`)}</p>
   ${isOwner && downloads?`<div class="owner-tools"><button class="small-btn" data-act="csv">${one('Download results (CSV)','ទាញយកលទ្ធផល (CSV)')}</button></div>`:''}
   `:''}`;
 }
@@ -1027,6 +1071,7 @@ document.addEventListener('click', async e=>{
   if(el.dataset.filter){ teamFilter=el.dataset.filter; openId=null; render(); return; }
   if(el.dataset.sort){ teamSort=el.dataset.sort; render(); return; }
   if(el.dataset.cmp){ const id=el.dataset.cmp; compareIds = compareIds.includes(id) ? compareIds.filter(x=>x!==id) : [...compareIds,id].slice(-4); if(!compareIds.length) compareIds=[id]; render(); return; }
+  if(el.dataset.cionly){ ciOnly=el.dataset.cionly==='1'; render(); return; }
   if(el.dataset.cmode){ compareMode=el.dataset.cmode; render(); return; }
   if(el.dataset.tab){ teamTab=el.dataset.tab; render(); return; }
   if(el.dataset.goto){ teamTab='people'; teamFilter='all'; openId=el.dataset.goto; render(); const row=document.getElementById('row-'+el.dataset.goto); if(row) row.scrollIntoView({block:'start'}); return; }
@@ -1080,9 +1125,9 @@ async function finish(){
 }
 
 async function exportCSV(){
-  const head=['Name','Source','CI pattern','Lane','Other role','Updated','Lane fit %',...TRAITS.map(t=>t.en+' (natural)'),...TRAITS.map(t=>t.en+' (job)'),...TRAITS.map(t=>t.en+' (gap)'),...ITEMS.map((_,i)=>'P1 Q'+(i+1)),...ITEMS.map((_,i)=>'P2 Q'+(i+1))];
+  const head=['Name','Source','CI pattern','EU natural','EU job','Lane','Other role','Updated','Lane fit %',...TRAITS.map(t=>t.en+' (natural)'),...TRAITS.map(t=>t.en+' (job)'),...TRAITS.map(t=>t.en+' (gap)'),...ITEMS.map((_,i)=>'P1 Q'+(i+1)),...ITEMS.map((_,i)=>'P2 Q'+(i+1))];
   const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
-  const rows=results.map(r=>{ const g=gaps(r)||{}; return [r.name,r.source==='ci'?'Culture Index':'Survey',r.ci?.pattern||'',laneOf(r.lane).en,r.role,new Date(r.updatedAt||0).toISOString().slice(0,10),fitFor(laneOf(r.lane),r.scores)?.pct??'',
+  const rows=results.map(r=>{ const g=gaps(r)||{}; return [r.name,r.source==='ci'?'Culture Index':'Survey',r.ci?.pattern||'',r.ci?.traitsEU||'',r.ci?.jobEU||'',laneOf(r.lane).en,r.role,new Date(r.updatedAt||0).toISOString().slice(0,10),fitFor(laneOf(r.lane),r.scores)?.pct??'',
     ...TRAITS.map(t=>r.scores?.[t.k]),...TRAITS.map(t=>r.jobScores?.[t.k]??''),...TRAITS.map(t=>g[t.k]??''),
     ...(r.answers||ITEMS.map(()=>'')),...(r.jobAnswers||ITEMS.map(()=>''))].map(q).join(','); });
   const csv='\ufeff'+[head.map(q).join(','),...rows].join('\n');
@@ -1105,7 +1150,7 @@ async function exportCSV(){
   const timer=setTimeout(()=>{ if(!loaded){ dbState='slow'; render(); } },10000);
   db.collection('results').onSnapshot(snap=>{
     if(!snap.metadata.fromCache){ loaded=true; clearTimeout(timer); dbState='ok'; }
-    results = snap.docs.filter(d=>d.exists!==false).map(d=>({id:d.id,...(d.data()||{})})).filter(r=>r.scores);
+    results = snap.docs.filter(d=>d.exists!==false).map(d=>normRec({id:d.id,...(d.data()||{})})).filter(r=>r.scores);
     if(view!=='take') render();
   }, err=>{ clearTimeout(timer); dbState='none'; render(); });
 })();
