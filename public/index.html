@@ -463,6 +463,7 @@ let lastResult = null, saveState = null;
 let db=null, user=null, myId=null, isOwner=false, downloads=null;
 let results=[], dbState='connecting';
 let teamFilter='all', teamSort='name', teamTab='shape', openId=null, confirmDel=null;
+let confirmClaim=null;
 let compareIds=[], compareMode='natural', ciOnly=false;
 
 /* ---------- helpers ---------- */
@@ -1094,6 +1095,8 @@ function vTeam(){
       ${summaryHTML(r)}
       ${euHTML(r)}
       ${barsHTML(r, list.length>1?avg:null)}
+      ${/^d_/.test(r.id) && r.id!==myId ? `<div class="owner-tools"><button class="small-btn" data-claim="${esc(r.id)}">${confirmClaim===r.id?one('Tap again: use this result as mine on this phone','ចុចម្តងទៀត៖ ប្រើលទ្ធផលនេះជារបស់ខ្ញុំ នៅលើទូរស័ព្ទនេះ'):one('This is me','នេះគឺខ្ញុំ')}</button></div>
+      ${confirmClaim===r.id?`<p class="note">${one('Only for your own result: this phone will then be able to change it.','សម្រាប់តែលទ្ធផលរបស់អ្នកប៉ុណ្ណោះ៖ ទូរស័ព្ទនេះនឹងអាចកែវាបាន។')}</p>`:''}`:''}
       ${isOwner?`<div class="owner-tools"><button class="small-btn danger" data-del="${esc(r.id)}">${confirmDel===r.id?one('Tap again to delete','ចុចម្តងទៀតដើម្បីលុប'):one('Delete result','លុបលទ្ធផល')}</button></div>`:''}
     </div>`:''}
   </li>`; }).join('')}</ul>
@@ -1141,7 +1144,12 @@ document.addEventListener('click', async e=>{
   if(el.dataset.cmode){ compareMode=el.dataset.cmode; render(); return; }
   if(el.dataset.tab){ teamTab=el.dataset.tab; render(); return; }
   if(el.dataset.goto){ teamTab='people'; teamFilter='all'; openId=el.dataset.goto; render(); const row=document.getElementById('row-'+el.dataset.goto); if(row) row.scrollIntoView({block:'start'}); return; }
-  if(el.dataset.open){ openId = openId===el.dataset.open?null:el.dataset.open; confirmDel=null; render(); return; }
+  if(el.dataset.open){ openId = openId===el.dataset.open?null:el.dataset.open; confirmDel=null; confirmClaim=null; render(); return; }
+  if(el.dataset.claim){
+    if(confirmClaim!==el.dataset.claim){ confirmClaim=el.dataset.claim; render(); return; }
+    // platform.js reads ?me= and makes this browser use that result's id
+    location.href = `${location.pathname}?me=${encodeURIComponent(el.dataset.claim)}#mine`; return;
+  }
   if(el.dataset.del){
     if(confirmDel!==el.dataset.del){ confirmDel=el.dataset.del; render(); return; }
     try{ await db.collection('results').doc(el.dataset.del).delete(); openId=null; }catch(err){ alertNote(one('Could not delete this result.','មិនអាចលុបលទ្ធផលនេះបានទេ។')); }
