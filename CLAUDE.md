@@ -41,6 +41,7 @@ app after the first deploy (retake the survey or re-upload the Culture Index PDF
 
 Netlify site: `send-cambodia-profile` in the GP Apps team (https://send-cambodia-profile.netlify.app).
 TEAM_CODE and ADMIN_CODE are set there as secret environment variables for production.
+Changing either code in Netlify only takes effect after a new deploy (Deploys → Trigger deploy, or any push).
 
 ## Access model (deliberately simple; improve if needed)
 
