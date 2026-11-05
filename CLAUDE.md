@@ -53,7 +53,8 @@ Changing either code in Netlify only takes effect after a new deploy (Deploys â†
   that browser use the same id (platform.js reads `me`, stores it, and strips it from the address bar).
   Whoever has the link can change that result, so the page tells people to keep it to themselves.
 - Telegram's in-app browser does not always keep its storage, so people may lose even that link. Every
-  person in the People list has a "This is me" button (tap twice) that does the same thing from any browser.
+  person in the People list has a "This is me" button (tap twice, at the top of their details) that does the same
+  thing from any browser, for any saved result id (device ids `d_...` and admin-entered ids `p...`).
   Trade-off: anyone with the team code could claim someone else's result; fine for a small trusted team.
 - Codes are shared secrets, not accounts. If stronger access is needed, swap in Netlify Identity or
   magic-link email in `platform.js` + `roleFor()` in `results.mjs`; the page itself shouldn't need to change.

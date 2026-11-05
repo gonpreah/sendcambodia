@@ -828,7 +828,7 @@ function summaryHTML(r){
 }
 
 // Personal link: opens this person's own result in any other browser or phone (see platform.js).
-function myLink(){ return /^d_/.test(myId||'') && location.protocol.startsWith('http') ? `${location.origin}${location.pathname}?me=${encodeURIComponent(myId)}#mine` : ''; }
+function myLink(){ return /^[A-Za-z0-9_-]{6,80}$/.test(myId||'') && location.protocol.startsWith('http') ? `${location.origin}${location.pathname}?me=${encodeURIComponent(myId)}#mine` : ''; }
 function myLinkHTML(r){
   const url=myLink(); if(!url || r.id!==myId) return '';
   return `<div class="fitbox">
@@ -1090,13 +1090,13 @@ function vTeam(){
     </button>
     ${openId===r.id?`<div class="detail">
       <div class="meta">${one('Updated','កែប្រែចុងក្រោយ')} ${new Date(r.updatedAt||0).toLocaleDateString(lang==='km'?'km-KH':'en-GB',{day:'numeric',month:'short',year:'numeric'})}</div>
+      ${/^[A-Za-z0-9_-]{6,80}$/.test(r.id) && r.id!==myId ? `<div class="owner-tools"><button class="small-btn" data-claim="${esc(r.id)}">${confirmClaim===r.id?one('Tap again: use this result as mine on this phone','ចុចម្តងទៀត៖ ប្រើលទ្ធផលនេះជារបស់ខ្ញុំ នៅលើទូរស័ព្ទនេះ'):one('This is me','នេះគឺខ្ញុំ')}</button></div>
+      ${confirmClaim===r.id?`<p class="note">${one('Only for your own result: this phone will then be able to change it.','សម្រាប់តែលទ្ធផលរបស់អ្នកប៉ុណ្ណោះ៖ ទូរស័ព្ទនេះនឹងអាចកែវាបាន។')}</p>`:''}`:''}
       ${fitHTML(r)}
       ${patternLine(r)}
       ${summaryHTML(r)}
       ${euHTML(r)}
       ${barsHTML(r, list.length>1?avg:null)}
-      ${/^d_/.test(r.id) && r.id!==myId ? `<div class="owner-tools"><button class="small-btn" data-claim="${esc(r.id)}">${confirmClaim===r.id?one('Tap again: use this result as mine on this phone','ចុចម្តងទៀត៖ ប្រើលទ្ធផលនេះជារបស់ខ្ញុំ នៅលើទូរស័ព្ទនេះ'):one('This is me','នេះគឺខ្ញុំ')}</button></div>
-      ${confirmClaim===r.id?`<p class="note">${one('Only for your own result: this phone will then be able to change it.','សម្រាប់តែលទ្ធផលរបស់អ្នកប៉ុណ្ណោះ៖ ទូរស័ព្ទនេះនឹងអាចកែវាបាន។')}</p>`:''}`:''}
       ${isOwner?`<div class="owner-tools"><button class="small-btn danger" data-del="${esc(r.id)}">${confirmDel===r.id?one('Tap again to delete','ចុចម្តងទៀតដើម្បីលុប'):one('Delete result','លុបលទ្ធផល')}</button></div>`:''}
     </div>`:''}
   </li>`; }).join('')}</ul>

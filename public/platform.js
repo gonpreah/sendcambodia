@@ -18,7 +18,7 @@
   try {
     const params = new URLSearchParams(location.search);
     const me = params.get('me');
-    if (me && /^d_[A-Za-z0-9]{6,64}$/.test(me)) {
+    if (me && /^[A-Za-z0-9_-]{6,80}$/.test(me) && !me.startsWith('_meta')) {
       localStorage.setItem(DEVICE_KEY, me);
       params.delete('me');
       const q = params.toString();
