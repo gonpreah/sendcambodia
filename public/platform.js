@@ -13,6 +13,19 @@
 (() => {
   const CODE_KEY = 'scp_code', DEVICE_KEY = 'scp_device', POLL_MS = 20000;
 
+  // A personal link (?me=d_...) connects this browser to a result saved in another one,
+  // e.g. the survey taken in Telegram's built-in browser, now opened in Safari.
+  try {
+    const params = new URLSearchParams(location.search);
+    const me = params.get('me');
+    if (me && /^d_[A-Za-z0-9]{6,64}$/.test(me)) {
+      localStorage.setItem(DEVICE_KEY, me);
+      params.delete('me');
+      const q = params.toString();
+      history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+    }
+  } catch (e) {}
+
   const deviceId = (() => {
     let id = null;
     try { id = localStorage.getItem(DEVICE_KEY); } catch (e) {}

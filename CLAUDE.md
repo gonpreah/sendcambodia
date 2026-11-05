@@ -48,6 +48,10 @@ Changing either code in Netlify only takes effect after a new deploy (Deploys â†
 - Everyone enters `TEAM_CODE` once per device (saved in localStorage). `ADMIN_CODE` gives the admin role.
 - Each device gets a random id (`d_...`). A member can only write the result whose id is their device id.
   The admin can write or delete any id.
+- The device id lives in each browser's own storage, so Telegram's built-in browser and Safari are different
+  "devices". The person page shows a personal link (`?me=<device id>#mine`); opening it in another browser makes
+  that browser use the same id (platform.js reads `me`, stores it, and strips it from the address bar).
+  Whoever has the link can change that result, so the page tells people to keep it to themselves.
 - Codes are shared secrets, not accounts. If stronger access is needed, swap in Netlify Identity or
   magic-link email in `platform.js` + `roleFor()` in `results.mjs`; the page itself shouldn't need to change.
 - All pages send `noindex`.

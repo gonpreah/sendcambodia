@@ -826,6 +826,17 @@ function summaryHTML(r){
   return `<div class="summary">${L(en,km)}</div>`;
 }
 
+// Personal link: opens this person's own result in any other browser or phone (see platform.js).
+function myLink(){ return /^d_/.test(myId||'') && location.protocol.startsWith('http') ? `${location.origin}${location.pathname}?me=${encodeURIComponent(myId)}#mine` : ''; }
+function myLinkHTML(r){
+  const url=myLink(); if(!url || r.id!==myId) return '';
+  return `<div class="fitbox">
+    <h3>${L('Open your result on another phone or browser','បើកលទ្ធផលរបស់អ្នកនៅលើទូរស័ព្ទ ឬកម្មវិធីរុករកផ្សេង')}</h3>
+    <p class="note" style="margin-top:4px">${one('Each browser remembers you separately (for example Telegram and Safari). Open this link there and it will know this result is yours. Keep it to yourself: whoever has it can change your result.','កម្មវិធីរុករកនីមួយៗចងចាំអ្នកដាច់ដោយឡែក (ឧទាហរណ៍ Telegram និង Safari)។ បើកតំណនេះនៅទីនោះ ហើយវានឹងដឹងថាលទ្ធផលនេះជារបស់អ្នក។ សូមរក្សាទុកសម្រាប់ខ្លួនឯង៖ អ្នកណាមានតំណនេះ អាចកែលទ្ធផលរបស់អ្នកបាន។')}</p>
+    <input type="text" readonly value="${esc(url)}" id="mylink" style="font-size:13px;margin-top:6px">
+    <div class="owner-tools" style="margin-top:8px"><button class="small-btn" data-act="copy-link">${one('Copy my link','ចម្លងតំណរបស់ខ្ញុំ')}</button></div>
+  </div>`;
+}
 function vMine(){
   const r = lastResult || results.find(x=>x.id===myId);
   if(!r) return `<div class="empty">${L('You haven’t taken it yet.','អ្នកមិនទាន់បានធ្វើនៅឡើយទេ។')}<div class="btn-col"><button class="btn" data-act="start">${L('Start','ចាប់ផ្តើម')}</button></div></div>`;
@@ -846,6 +857,7 @@ function vMine(){
   ${barsHTML(r, others.length?avg:null)}
   ${!r.jobScores&&r.source!=='ci'?`<p class="note">${L('This result is from before part 2 was added. Take it again to see what your job asks of you.','លទ្ធផលនេះធ្វើមុនពេលបន្ថែមផ្នែកទី ២។ សូមធ្វើម្តងទៀត ដើម្បីមើលអ្វីដែលការងាររបស់អ្នកតម្រូវ។')}</p>`:''}
   ${!r.lane?`<p class="note">${L('No lane was chosen for this result. Take it again and pick a lane to see the job fit.','លទ្ធផលនេះមិនទាន់ជ្រើសផ្នែក។ សូមធ្វើម្តងទៀត ហើយជ្រើសផ្នែក ដើម្បីមើលភាពស៊ីគ្នាជាមួយការងារ។')}</p>`:''}
+  ${myLinkHTML(r)}
   <div class="btn-col">
     <button class="btn" data-act="team">${L('See team results','មើលលទ្ធផលក្រុម')}</button>
     ${form.forOther?`<button class="btn ghost" data-act="next-person">${L('Start for the next person','ចាប់ផ្តើមសម្រាប់មនុស្សបន្ទាប់')}</button>`:''}
@@ -1151,6 +1163,7 @@ document.addEventListener('click', async e=>{
   else if(act==='finish'){ await finish(); }
   else if(act==='next-person'){ form={name:'',lane:'',role:'',pattern:'',forOther:true}; const wasCI=lastResult?.source==='ci'; ci=blankCI(); ciFile=null; ciStatus=null; ciEdit=false; answers.fill(null); jobAnswers.fill(null); qi=0; stage=wasCI?'ci':'info'; lastResult=null; saveState=null; go('take'); }
   else if(act==='csv'){ exportCSV(); }
+  else if(act==='copy-link'){ const url=myLink(); let ok=false; try{ await navigator.clipboard.writeText(url); ok=true; }catch(e){} const inp=$('#mylink'); if(inp){ inp.focus(); inp.select(); } el.textContent = ok ? one('Copied','បានចម្លង') : one('Select the link above and copy it','សូមជ្រើសតំណខាងលើ ហើយចម្លងវា'); }
 });
 function alertNote(msg){ const p=document.createElement('p'); p.className='saved warn'; p.textContent=msg; $('#app').prepend(p); setTimeout(()=>p.remove(),4000); }
 
