@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Send Cambodia CRM</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=Kantumruy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* The Send: yellow, red, ink, cream. Anton for headings, Archivo for text, Kantumruy Pro for Khmer. */
+:root{
+  --yellow:#F6C744; --red:#E8382D; --red-text:#C42D23; --ink:#141210; --cream:#F7F1E3; --card:#FFFDF7;
+  --line:#E2D9C4; --muted:#5E574A; --soft:#FBF3D9;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Archivo","Kantumruy Pro",system-ui,sans-serif;font-size:16px;line-height:1.5}
+[lang="km"],.km{font-family:"Kantumruy Pro","Noto Sans Khmer",sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+a{color:var(--red-text)}
+/* top bar, as on The Send's own platform */
+.bar{position:sticky;top:0;z-index:5;background:var(--ink);color:var(--cream);padding:env(safe-area-inset-top,0) 0 0}
+.bar-in{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;background:none;border:0;color:var(--cream);padding:0}
+.logo b{font-family:"Archivo",sans-serif;font-weight:800;letter-spacing:.04em;font-size:17px}
+.logo small{display:block;font-size:11px;letter-spacing:.18em;color:var(--yellow);font-weight:800}
+.logo svg{width:30px;height:30px;flex:none}
+.bar .sp{flex:1}
+.lang{display:flex;border:1px solid #3a352d;border-radius:999px;overflow:hidden}
+.lang button{border:0;background:none;color:var(--cream);padding:5px 12px;font-size:13px}
+.lang button[aria-pressed="true"]{background:var(--yellow);color:var(--ink)}
+.who{width:34px;height:34px;border-radius:50%;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-weight:800;font-size:13px;border:0}
+.nav{max-width:1100px;margin:0 auto;padding:0 8px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav a{color:#CFC8B8;text-decoration:none;padding:10px 12px 12px;font-weight:600;font-size:14px;white-space:nowrap;border-bottom:3px solid transparent}
+.nav a[aria-current="page"]{color:var(--yellow);border-bottom-color:var(--yellow)}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 80px}
+h1,h2{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em;line-height:1.05;margin:8px 0 14px}
+h1{font-size:40px} h2{font-size:26px}
+h1.km,h2.km{font-family:"Kantumruy Pro",sans-serif;font-weight:700;text-transform:none}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--red-text);margin:0}
+.muted{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--ink);background:var(--yellow);color:var(--ink);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:14px;padding:11px 18px;border-radius:4px;min-height:46px;text-decoration:none}
+.btn.ghost{background:transparent}
+.btn.danger{background:transparent;border-color:var(--red);color:var(--red-text)}
+.btn.small{min-height:36px;padding:6px 12px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:12px 0 24px}
+.tile{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--yellow);border-radius:8px;padding:12px 14px}
+.tile b{display:block;font-family:"Anton",Impact,sans-serif;font-weight:400;font-size:38px;line-height:1.1}
+.tile span{font-size:13px;color:var(--muted);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr} h1{font-size:32px}}
+.hbar{display:grid;grid-template-columns:130px 1fr 40px;gap:10px;align-items:center;margin:8px 0;font-size:14px}
+.hbar i{display:block;height:14px;background:var(--yellow);border:1px solid var(--ink);border-radius:2px;min-width:2px}
+.hbar em{font-style:normal;font-weight:800;text-align:right}
+label.f{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+input[type=text],input[type=tel],input[type=email],input[type=search],input[type=password],select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:6px;background:#fff;font-size:16px}
+textarea{min-height:90px;resize:vertical}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media (max-width:640px){.fields{grid-template-columns:1fr}}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.chip[aria-pressed="true"],.chip:has(input:checked){background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--soft);border:1px solid var(--line);margin:2px 4px 2px 0;white-space:nowrap}
+.pill.red{background:var(--red);border-color:var(--red);color:#fff}
+.list{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--line)}
+.list li{border-bottom:1px solid var(--line)}
+.list a{display:flex;gap:12px;align-items:center;padding:12px 4px;color:inherit;text-decoration:none}
+.list a:hover{background:var(--soft)}
+.av{width:40px;height:40px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:14px;flex:none}
+.grow{flex:1;min-width:0}
+.grow b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grow small{color:var(--muted)}
+.toolbar{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin:8px 0}
+@media (max-width:640px){.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}}
+.board{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px;overflow-x:auto;padding-bottom:8px}
+@media (max-width:640px){.board{grid-template-columns:1fr}}
+.col{background:#EFE6D0;border-radius:8px;padding:10px}
+.col h3{margin:2px 4px 10px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between}
+.col a{display:block;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--yellow);border-radius:6px;padding:10px;margin-bottom:8px;color:inherit;text-decoration:none}
+.col a small{display:block;color:var(--muted)}
+.note{border-left:4px solid var(--yellow);background:var(--soft);padding:10px 12px;border-radius:4px;margin:12px 0;font-size:14px}
+.note.warn{border-left-color:var(--red);background:#FCE9E6}
+table.prev{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+table.prev th,table.prev td{border-bottom:1px solid var(--line);padding:6px;text-align:left;vertical-align:top}
+.tablewrap{overflow-x:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--cream);padding:10px 16px;border-radius:6px;font-weight:600;z-index:20}
+.gate{min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--ink);color:var(--cream)}
+.gate form{width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px}
+.gate h1{color:var(--yellow);font-size:44px}
+.gate input{background:#1F1C18;border-color:#3a352d;color:var(--cream)}
+.err{color:#FF8A7A;min-height:1.4em;font-size:14px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="/app.js"></script>
+</body>
+</html>
